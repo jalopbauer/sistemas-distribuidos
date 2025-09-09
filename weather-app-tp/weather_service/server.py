@@ -20,24 +20,30 @@ class WeatherServicer(weatherapp_pb2_grpc.WeatherServicer):
             return weatherapp_pb2.WeatherResponse(error="Latitude/Longitude required")
 
         try:
+            weather_source = "open-meteo"
+            temperature_key = "temperature_2m"
+            temperature_unit = "C"
+            relative_humidity = "relative_humidity_2m"
+            precipitation = "precipitation"
+            apparent_temperature = "apparent_temperature"
+            current_weather_key = "current"
             params = {
                 "latitude": lat,
                 "longitude": lon,
-                "current": "temperature_2m",
+                current_weather_key: [temperature_key, relative_humidity, precipitation, apparent_temperature],
                 "timezone": "auto"
             }
             resp = requests.get(OPEN_METEO_URL, params=params, timeout=7)
             j = resp.json()
-            current = j.get("current", {})
-            value = current.get("temperature_2m", None)
-            time_iso = current.get("time", "")
-            if value is None:
-                return weatherapp_pb2.WeatherResponse(error="Open-Meteo returned no current temperature")
+            current = j.get(current_weather_key, {})
             info = weatherapp_pb2.WeatherInfo(
-                temperature_c=float(value),
-                unit="C",
-                source="open-meteo",
-                time_iso=time_iso
+                temperature_c=float(current.get(temperature_key, 0.0)),
+                unit=temperature_unit,
+                source=weather_source,
+                time_iso=current.get("time", ""),
+                humidity=float(current.get(relative_humidity, 0.0)),
+                precipitation=float(current.get(precipitation, 0.0)),
+                apparent_temperature=float(current.get(apparent_temperature, 0.0))
             )
             return weatherapp_pb2.WeatherResponse(weather=info)
         except Exception as e:

@@ -30,6 +30,9 @@ message WeatherInfo {
   string unit = 2;
   string source = 3;
   string time_iso = 4;
+  double humidity = 5;
+  double precipitation = 6;
+  double apparent_temperature = 7;
 }
 
 message WeatherResponse {
