@@ -38,8 +38,6 @@ function getClientIp(req) {
   return ip.replace("::ffff:", "");
 }
 
-app.get("/health", (req, res) => res.json({ ok: true }));
-
 app.get("/weather", (req, res) => {
   const ip = (req.query.ip || "").toString().trim();
   const meta = new grpc.Metadata();
