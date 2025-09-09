@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import morgan from "morgan";
 import * as grpc from "@grpc/grpc-js";
 import * as protoLoader from "@grpc/proto-loader";
 import path from "path";
@@ -29,7 +28,6 @@ const weatherClient = new weatherapp.Weather(WEATHER_ADDR, grpc.credentials.crea
 
 const app = express();
 app.use(cors());
-app.use(morgan("dev"));
 
 function getClientIp(req) {
   const xf = req.header("x-forwarded-for");
