@@ -47,3 +47,20 @@ Tótem en parque
 *Clasificación:* Centralizado – distribuido.
 
 *Justificación:* El control del servicio, el catálogo y los algoritmos de recomendación están bajo una autoridad central (Spotify). Sin embargo, la entrega del contenido está soportada por una infraestructura distribuida a través de CDNs y servidores en diferentes regiones, lo que permite alta disponibilidad y baja latencia.
+
+=== Elija un sistema descentralizado y justifique su respuesta
+
+*Descripción:* Mastodon es una red social de microblogging de software libre que funciona bajo el protocolo ActivityPub. Los usuarios se registran en instancias independientes (servidores) y pueden interactuar con usuarios de otras instancias gracias a la federación.
+
+*Clasificación:* Descentralizado.
+
+*Justificación:*
+
+- Cada instancia de Mastodon es autónoma: administra a sus usuarios, sus reglas, su almacenamiento y su moderación.
+
+- No existe una autoridad central que controle toda la red; las instancias se comunican entre sí mediante protocolos abiertos (federación).
+
+- La “verdad” de los datos de cada usuario está en el servidor donde se registró, pero puede intercambiar información con otros servidores para permitir interacciones sociales entre comunidades distintas.
+
+- Esto implica que si una instancia cae o se desconecta, el resto de la red sigue funcionando (no hay un único punto de fallo global).
+
