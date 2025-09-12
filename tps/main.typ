@@ -67,3 +67,123 @@ Tótem en parque
 === Dado un server plex corriendo en una raspberry donde tengo todos los videos familiares en el mismo disco. ¿Cuándo pasaría a ser un sistema distribuido y por qué?
 
 Plex pasa a ser distribuido cuando la responsabilidad de almacenamiento y/o entrega de los videos no está en un solo servidor, sino en varios nodos que cooperan para brindar el servicio.
+
+== Problemas de los sistemas distribuidos
+
+=== Las computadoras se rompen
+
+*Ejemplo del problema:* si un servidor físico falla (por hardware dañado o apagado inesperado), el servicio se interrumpe porque era el único que lo ejecutaba.
+
+*Ejemplo de solución:* desplegar el mismo software en varias computadoras en paralelo, de manera que si una se rompe, la otra puede seguir respondiendo.
+
+*Mecanismos concretos:* clusters con balanceo de carga, failover automático, servidores redundantes. Por ejemplo, en una base de datos, tener un nodo primario y un nodo réplica listo para asumir el rol si el primario falla.
+
+=== No saben con quién comunicarse
+
+*Ejemplo del problema:* en un sistema distribuido, un nodo no sabe la dirección actual de otro nodo con el que necesita comunicarse (porque cambió IP, se reinició o escaló horizontalmente).
+
+*Ejemplo de solución:* tener un servicio centralizado de descubrimiento, donde cada nodo registra su ubicación y capacidades, y otros nodos pueden consultarlo para encontrarlo.
+
+*Mecanismos concretos:* DNS dinámico, service discovery en Kubernetes (etcd o Consul), servidores de registro para microservicios. Por ejemplo, un pod nuevo en Kubernetes se registra automáticamente y otros pods pueden encontrarlo usando el nombre del Service, sin preocuparse de la IP concreta.
+
+=== No se ponen de acuerdo
+
+*Ejemplo del problema:* varios nodos tienen copias del mismo dato o deben decidir quién lidera una tarea, y cada uno puede pensar algo distinto. Si no hay acuerdo, la consistencia se rompe o el sistema puede fallar.
+
+*Ejemplo de solución:* usar algoritmos de consenso que garanticen que todos los nodos acuerden la misma decisión, incluso si algunos fallan o se retrasan.
+
+*Mecanismos concretos:*
+
+- Raft o Paxos: se usan en bases de datos distribuidas o sistemas de coordinación.
+
+- Etcd en Kubernetes: asegura que todos los nodos del clúster tienen el mismo estado de configuración mediante consenso Raft.
+
+- Zookeeper en Hadoop/HBase: coordina líderes y mantiene consistencia de metadatos.
+
+=== Se corta la comunicación
+
+*Qué significa:* en sistemas distribuidos, los nodos dependen de la red para coordinarse. Si hay una partición de red (un corte, fallo de enlace, congestión), algunos nodos quedan aislados y no pueden comunicarse entre sí. Esto puede provocar inconsistencias o pérdida de disponibilidad temporal.
+
+*Ejemplo real:*
+
+En un clúster de bases de datos replicadas, si un nodo queda aislado por un corte de red, puede que siga aceptando escrituras sin saber lo que pasó en los demás nodos (problema de particiones).
+
+En sistemas de mensajería, un broker aislado puede dejar de recibir o enviar mensajes hasta que se restaure la conexión.
+
+*Soluciones típicas:*
+
+Reintentos automáticos: cuando se restablece la conexión, los nodos sincronizan el estado.
+
+Tolerancia a particiones: diseñar el sistema según el teorema CAP, eligiendo entre consistencia o disponibilidad.
+
+Replicación eventual: permitir que los nodos continúen operando y luego converjan cuando la red vuelva a estar disponible.
+
+*Ejemplos concretos:*
+
+- Apache Kafka reconfigura líderes de particiones cuando un broker queda aislado.
+
+- Sistemas como Cassandra o DynamoDB usan consistencia eventual para sobrevivir a cortes temporales de red.
+
+=== Se pierden los bits
+
+*Qué significa:* durante la comunicación entre nodos, los datos pueden corromperse o perderse debido a ruido en la red, congestión o fallos físicos. Esto provoca que los mensajes lleguen incompletos o incorrectos.
+
+*Ejemplo real:*
+
+En protocolos de transmisión sin control, como UDP, un paquete puede perderse o corromperse.
+
+Esto puede afectar streaming, VoIP o juegos en línea si no se implementa control adicional.
+
+*Soluciones típicas:*
+
+Detección de errores: checksums, CRC, hashes para identificar datos corruptos.
+
+Retransmisión: protocolos como TCP reenvían los paquetes que se detecta que faltan o están dañados.
+
+Redundancia o codificación: añadir información extra (FEC, Forward Error Correction) para recuperar datos sin necesidad de retransmisión.
+
+Ejemplo concreto: TCP garantiza entrega fiable reensamblando los paquetes y reenviando los que se pierden; los videojuegos que usan UDP suelen implementar su propio sistema de verificación y retransmisión de paquetes críticos.
+
+=== Pueden venir intrusos
+
+*Qué significa:* en sistemas distribuidos, mensajes o solicitudes pueden ser interceptados, falsificados o enviados por actores no autorizados, comprometiendo datos y servicios.
+
+*Ejemplo real:* un atacante que hace man-in-the-middle o envía solicitudes fraudulentas a una API de un servicio distribuido.
+
+*Soluciones típicas:*
+
+Autenticación: verificar que quien envía la solicitud es quien dice ser (Bearer tokens, API keys, certificados digitales).
+
+Autorización: controlar qué acciones puede realizar cada usuario/nodo.
+
+Cifrado en tránsito: TLS/SSL para proteger datos mientras se envían por la red.
+
+Firewall y control de acceso a la red: limitar qué nodos pueden conectarse entre sí.
+
+*Ejemplo concreto:*
+
+APIs REST usan Bearer tokens o API keys para autenticar clientes antes de permitirles acceso.
+
+Sistemas de mensajería cifrada como Signal garantizan que los mensajes solo puedan ser leídos por los destinatarios autorizados.
+
+=== Obvio… hay bugs en el código
+
+Qué significa: todo software puede contener errores que provoquen fallos inesperados, desde un componente hasta la caída de un servicio completo en sistemas distribuidos.
+
+Ejemplo real: un microservicio que lanza una excepción no controlada y hace que toda la aplicación deje de responder.
+
+Soluciones típicas:
+
+Tolerancia a fallos: diseñar el sistema de manera que un error en un componente no afecte a los demás.
+
+Fail-fast y recuperación rápida: los componentes detectan errores de inmediato, fallan rápido y otros nodos o procesos pueden asumir la carga.
+
+Patrones concretos:
+
+Circuit breaker: evita que llamadas repetidas a un componente fallido colapsen el sistema.
+
+Supervisión de actores (Actor model, Erlang/Elixir): un supervisor reinicia procesos fallidos automáticamente.
+
+Chaos testing: Netflix con Chaos Monkey prueba fallos para asegurarse que el sistema se recupera sin afectar al usuario final.
+
+Ejemplo concreto: en Erlang/Elixir, cada proceso actor puede fallar sin derribar el sistema; un supervisor reinicia el proceso automáticamente.
