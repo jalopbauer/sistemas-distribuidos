@@ -1,7 +1,8 @@
 #set page(paper: "a5")
 
 = Capítulo 1 - Introducción
-== Califique y justifique los siguientes sistemas bajo estos conceptos en centralizados, descentralizados y distribuidos
+== Sistemas centralizados, descentralizados y distribuidos
+=== Califique y justifique los siguientes sistemas bajo estos conceptos en centralizados, descentralizados y distribuidos
 
 Gmail
 - Centralizado (gestionado por google)
@@ -30,3 +31,19 @@ Un cluster de virtualización de computadoras
 
 Tótem en parque
 - Centralizado (es un totem unico con un centro de verdad)
+
+=== Elija un sistema de su preferencia: Descríbalo, clasifíquelo y justifique.
+
+*Descripción:* Gmail es un servicio de correo electrónico provisto por Google. Permite a los usuarios enviar y recibir correos mediante protocolos estándar como SMTP, IMAP y POP, además de ofrecer funcionalidades adicionales como filtrado de spam, búsqueda y almacenamiento en la nube.
+
+*Clasificación:* Centralizado – distribuido.
+
+*Justificación:* La gestión de usuarios, autenticación, filtrado y control del servicio son centralizados bajo la administración de Google (una única autoridad). Sin embargo, para garantizar disponibilidad y escalabilidad global, Gmail se ejecuta en múltiples servidores distribuidos en datacenters a lo largo del mundo, lo que lo convierte también en un sistema distribuido a nivel de infraestructura.
+
+=== Elija un sistema centralizado pero distribuído y justifique su respuesta
+
+*Descripción:* Spotify es un servicio de streaming de música bajo demanda. Los usuarios acceden al catálogo a través de internet desde múltiples dispositivos.
+
+*Clasificación:* Centralizado – distribuido.
+
+*Justificación:* El control del servicio, el catálogo y los algoritmos de recomendación están bajo una autoridad central (Spotify). Sin embargo, la entrega del contenido está soportada por una infraestructura distribuida a través de CDNs y servidores en diferentes regiones, lo que permite alta disponibilidad y baja latencia.
