@@ -64,3 +64,6 @@ Tótem en parque
 
 - Esto implica que si una instancia cae o se desconecta, el resto de la red sigue funcionando (no hay un único punto de fallo global).
 
+=== Dado un server plex corriendo en una raspberry donde tengo todos los videos familiares en el mismo disco. ¿Cuándo pasaría a ser un sistema distribuido y por qué?
+
+Plex pasa a ser distribuido cuando la responsabilidad de almacenamiento y/o entrega de los videos no está en un solo servidor, sino en varios nodos que cooperan para brindar el servicio.
