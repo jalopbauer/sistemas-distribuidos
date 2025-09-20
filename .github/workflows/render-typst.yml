@@ -7,11 +7,21 @@ on:
 jobs:
   render-papers:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # This line gives the workflow permission to write to the repository
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
+
       - uses: typst-community/setup-typst@v4
+
       - name: Compile all Typst files
         run: |
           for file in tps/*.typ; do
             typst compile "$file"
           done
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: Auto-rendered PDFs from Typst files"
+          file_pattern: 'tps/*.pdf'
