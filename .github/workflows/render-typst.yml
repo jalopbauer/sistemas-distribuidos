@@ -1,0 +1,17 @@
+name: render-typst.yml
+on:
+  push:
+    paths:
+      - 'tps/**'
+
+jobs:
+  render-papers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: typst-community/setup-typst@v4
+      - name: Compile all Typst files
+        run: |
+          for file in tps/*.typ; do
+            typst compile "$file"
+          done
