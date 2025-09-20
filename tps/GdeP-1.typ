@@ -187,3 +187,38 @@ Supervisión de actores (Actor model, Erlang/Elixir): un supervisor reinicia pro
 Chaos testing: Netflix con Chaos Monkey prueba fallos para asegurarse que el sistema se recupera sin afectar al usuario final.
 
 Ejemplo concreto: en Erlang/Elixir, cada proceso actor puede fallar sin derribar el sistema; un supervisor reinicia el proceso automáticamente.
+
+== Arquitectura de software
+
+
+== Tipos de sistemas
+
+*Mitos*
+1. La red es confiable.
+2. La latencia es cero.
+3. El ancho de banda es infinito.
+4. La red es segura.
+5. La topología no cambia.
+6. Hay un solo administrador.
+7. El costo de transporte es cero.
+8. La red es homogénea.
+
+=== Sistema P2P como BitTorrent
+- La red es segura (falso): porque cualquiera puede conectarse, incluso nodos maliciosos que suban archivos corruptos, malware o ficheros falsos.
+- La latencia es cero (falso): cada peer puede estar en otra parte del mundo, con distintas velocidades de conexión, lo que introduce retardos importantes.
+
+=== Sistema IoT en una casa inteligente
+- La red es segura (falso): las cámaras y dispositivos IoT suelen estar expuestos en internet sin suficiente protección → son un blanco fácil para ataques (ejemplo: botnets como Mirai).
+- Hay un solo administrador (falso): si todo pasa por un hub central y ese nodo falla, toda la red se cae; en realidad, la administración puede estar distribuida o incluso fuera del control del usuario (fabricante, cloud).
+- La red es confiable (falso): los dispositivos pueden desconectarse, tener interferencias de WiFi o incluso ser comprometidos desde dentro de la red.
+- La topología no cambia (falso): los dispositivos IoT se agregan o eliminan constantemente (ej. enchufes inteligentes nuevos, sensores que se rompen).
+
+=== Sistema en la nube
+- La red es confiable (falso): fallas en data centers, caídas de servicios (ej. outage de AWS en una región).
+- La latencia es cero (falso): depende de la ubicación del usuario y la región de la nube (ej. un cliente en LatAm usando un server en EE.UU. tiene más latencia).
+- El ancho de banda es infinito (falso): transferir TBs entre regiones es lento y muy costoso.
+- La red es segura (falso): vulnerabilidades, errores de configuración (ej. buckets S3 públicos).
+- La topología no cambia (falso): las VMs, contenedores y servicios escalan dinámicamente.
+- El costo de transporte es cero (falso): mover datos entre regiones o salir a internet cuesta bastante.
+- La red es homogénea (falso): distintas instancias, regiones, proveedores; no todo se comporta igual.
+- Hay un solo administrador (falso): hay miles de ingenieros y sistemas detrás.
